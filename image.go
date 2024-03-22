@@ -18,7 +18,7 @@ func UploadImage(reader func() io.ReadCloser) *admin.Image {
 
 	id := "/image/" + uuid.New().String()
 
-	createImageHandler(id, func(w http.ResponseWriter, r *http.Request) {
+	register(id, func(w http.ResponseWriter, r *http.Request) {
 
 		body := reader()
 		defer body.Close()
@@ -35,6 +35,7 @@ func UploadImage(reader func() io.ReadCloser) *admin.Image {
  * UploadImageFromUrl
  */
 func UploadImageFromUrl(url string) *admin.Image {
+
 	return UploadImage(func() io.ReadCloser {
 
 		fmt.Printf("Uploading image `%s`...\n", url)
@@ -52,6 +53,7 @@ func UploadImageFromUrl(url string) *admin.Image {
  * UploadImageFromUrl_BasicAuth
  */
 func UploadImageFromUrl_BasicAuth(url string, username string, password string) *admin.Image {
+
 	return UploadImage(func() io.ReadCloser {
 
 		fmt.Printf("Uploading image `%s`...\n", url)

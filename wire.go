@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -25,10 +26,10 @@ var (
 type Feed interface {
 	ProjectId() string
 	GetLogfiles() ([][]byte, error)
-	ProcessLogfile([]byte) []*admin.ArticleInput
+	ProcessLogfile(*admin.Project, []byte) []*admin.ArticleInput
 }
 
-func createImageHandler(pattern string, handler func(http.ResponseWriter, *http.Request)) {
+func register(pattern string, handler func(http.ResponseWriter, *http.Request)) {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -45,10 +46,15 @@ func InitializeFeeds(feeds []Feed) {
 	mux = http.NewServeMux()
 	mux.Handle(v1connect.NewWireServiceHandler(&WireService{}))
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3333"
+	}
+
 	server := &http.Server{
 		ReadTimeout:  300 * time.Second,
 		WriteTimeout: 300 * time.Second,
-		Addr:         ":3333",
+		Addr:         ":" + port,
 		Handler:      h2c.NewHandler(mux, &http2.Server{}),
 	}
 
@@ -76,9 +82,9 @@ func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogf
 }
 
 func (s *WireService) ProcessLogfile(ctx context.Context, r *buf.Request[v1.ProcessLogfileRequest]) (*buf.Response[v1.ProcessLogfileResponse], error) {
-	if feed, ok := state[r.Msg.ProjectId]; ok {
+	if feed, ok := state[r.Msg.Project.Id]; ok {
 		return buf.NewResponse(&v1.ProcessLogfileResponse{
-			Articles: feed.ProcessLogfile(r.Msg.Data),
+			Articles: feed.ProcessLogfile(r.Msg.Project, r.Msg.Data),
 		}), nil
 	}
 
