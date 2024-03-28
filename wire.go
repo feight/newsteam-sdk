@@ -25,7 +25,7 @@ var (
 
 type Feed interface {
 	ProjectId() string
-	GetLogfiles() ([][]byte, error)
+	GetLogfiles(state *admin.Cursor) ([][]byte, error)
 	ProcessLogfile(*admin.Project, []byte) []*admin.ArticleInput
 }
 
@@ -68,13 +68,14 @@ type WireService struct{}
 func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogfilesRequest]) (*buf.Response[v1.GetLogfilesResponse], error) {
 	if feed, ok := state[r.Msg.ProjectId]; ok {
 
-		logfiles, err := feed.GetLogfiles()
+		logfiles, err := feed.GetLogfiles(r.Msg.Cursor)
 		if err != nil {
 			return nil, err
 		}
 
 		return buf.NewResponse(&v1.GetLogfilesResponse{
-			Data: logfiles,
+			Data:   logfiles,
+			Cursor: r.Msg.Cursor,
 		}), nil
 	}
 

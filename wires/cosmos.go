@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,14 +31,29 @@ func (s *CosmosImporter) ProjectId() string {
 /*
  * GetLogfiles
  */
-func (s *CosmosImporter) GetLogfiles() ([][]byte, error) {
+func (s *CosmosImporter) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 
-	fmt.Println("getting logfiles...")
+	var (
+		offset = 0
+		limit  = 100
+	)
+
+	if state.SeekPos != "" {
+
+		var err error
+
+		offset, err = strconv.Atoi(state.SeekPos)
+
+		if err != nil {
+			return nil, errors.Wrap(err, "could not convert SeekPos to integer")
+		}
+	}
+
+	fmt.Println("getting logfiles... offset", offset)
 
 	url := fmt.Sprintf(
-		"%s/pub/articles/get-all?access_token=%s&limit=100&section=lifestyle",
-		s.Host,
-		s.AccessToken)
+		"%s/pub/articles/get-all?access_token=%s&limit=%d&offset=%d&section=lifestyle",
+		s.Host, s.AccessToken, limit, offset)
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -62,6 +78,8 @@ func (s *CosmosImporter) GetLogfiles() ([][]byte, error) {
 		record, _ := json.Marshal(a)
 		ret = append(ret, record)
 	}
+
+	state.SeekPos = fmt.Sprintf("%d", offset+limit)
 
 	return ret, nil
 }

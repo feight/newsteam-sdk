@@ -2,7 +2,6 @@ package newsteam
 
 import (
 	"encoding/base64"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -38,7 +37,7 @@ func UploadImageFromUrl(url string) *admin.Image {
 
 	return UploadImage(func() io.ReadCloser {
 
-		fmt.Printf("Uploading image `%s`...\n", url)
+		// fmt.Printf("Uploading image `%s`...\n", url)
 
 		response, err := http.Get(url)
 		if err != nil {
@@ -56,7 +55,7 @@ func UploadImageFromUrl_BasicAuth(url string, username string, password string) 
 
 	return UploadImage(func() io.ReadCloser {
 
-		fmt.Printf("Uploading image `%s`...\n", url)
+		// fmt.Printf("Uploading image `%s`...\n", url)
 
 		credentials := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		req, err := http.NewRequest("GET", url, nil)

@@ -3,9 +3,9 @@ module github.com/feight/newsteam-sdk
 go 1.22.0
 
 require (
-	buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.15.0-20240320111905-f49b84183653.1
-	buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.33.0-20240320111905-f49b84183653.1
-	connectrpc.com/connect v1.15.0
+	buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.16.0-20240320111905-f49b84183653.1
+	buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.33.0-20240327183023-3fd79d7c067c.1
+	connectrpc.com/connect v1.16.0
 	github.com/fatih/color v1.16.0
 	github.com/google/uuid v1.6.0
 	github.com/mitchellh/mapstructure v1.5.0
