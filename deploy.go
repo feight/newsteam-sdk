@@ -54,8 +54,6 @@ func runPrebuild(s *Deployment) {
 	if err != nil {
 		panic(errors.Wrap(err, "could not complete build"))
 	}
-
-	cmd.Wait()
 }
 
 func runBuild(s *Deployment) {
@@ -64,7 +62,7 @@ func runBuild(s *Deployment) {
 		"docker",
 		"build",
 		"--platform", "linux/amd64",
-		"-t", fmt.Sprintf("eu.gcr.io/%s/%s", s.ProjectId, s.Name),
+		"-t", getImageTag(s.ProjectId, s.Name),
 		s.DockerfilePath,
 	)
 
@@ -78,8 +76,6 @@ func runBuild(s *Deployment) {
 	if err != nil {
 		panic(errors.Wrap(err, "could not complete build"))
 	}
-
-	cmd.Wait()
 }
 
 func pushImage(s *Deployment) {
@@ -87,7 +83,7 @@ func pushImage(s *Deployment) {
 	cmd := exec.Command(
 		"docker",
 		"push",
-		fmt.Sprintf("eu.gcr.io/%s/%s", s.ProjectId, s.Name),
+		getImageTag(s.ProjectId, s.Name),
 	)
 
 	cmd.Stdout = os.Stdout
@@ -99,8 +95,6 @@ func pushImage(s *Deployment) {
 	if err != nil {
 		panic(errors.Wrap(err, "could not push image"))
 	}
-
-	cmd.Wait()
 }
 
 func deploy(s *Deployment) {
@@ -111,9 +105,9 @@ func deploy(s *Deployment) {
 		"deploy",
 		s.Name,
 		"--project", s.ProjectId,
-		"--region", "europe-west1",
+		"--region", getRegion(),
 		"--platform", "managed",
-		"--image", fmt.Sprintf("eu.gcr.io/%s/%s", s.ProjectId, s.Name),
+		"--image", getImageTag(s.ProjectId, s.Name),
 		"--allow-unauthenticated",
 		"--update-labels", "type=backend")
 
@@ -130,6 +124,14 @@ func deploy(s *Deployment) {
 	if err != nil {
 		panic(errors.Wrap(err, "could not complete deploy"))
 	}
+}
 
-	cmd.Wait()
+func getImageTag(projectId string, serviceName string) string {
+
+	return fmt.Sprintf("%s-docker.pkg.dev/%s/newsteam/%s", getRegion(), projectId, serviceName)
+}
+
+func getRegion() string {
+
+	return "africa-south1"
 }

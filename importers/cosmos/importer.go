@@ -1,4 +1,4 @@
-package wires
+package cosmos
 
 import (
 	"crypto/sha1"
@@ -18,20 +18,20 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type CosmosImporter struct {
+type Importer struct {
 	Host        string
 	Project     string
 	AccessToken string
 }
 
-func (s *CosmosImporter) ProjectId() string {
+func (s *Importer) ProjectId() string {
 	return s.Project
 }
 
 /*
  * GetLogfiles
  */
-func (s *CosmosImporter) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
+func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 
 	var (
 		offset = 0
@@ -52,34 +52,48 @@ func (s *CosmosImporter) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 	fmt.Println("getting logfiles... offset", offset)
 
 	url := fmt.Sprintf(
-		"%s/pub/articles/get-all?access_token=%s&limit=%d&offset=%d&section=lifestyle",
-		s.Host, s.AccessToken, limit, offset)
+		"%s/pub/articles/get-all?access_token=%s&limit=%d&offset=%d",
+		s.Host,
+		s.AccessToken,
+		limit,
+		offset,
+	)
 
 	response, err := http.Get(url)
+
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get articles from cosmos")
+
+		return nil, errors.Wrap(err, "could not get articles from cosmos: "+url)
 	}
 
 	defer response.Body.Close()
+
 	b, err := io.ReadAll(response.Body)
+
 	if err != nil {
-		return nil, errors.Wrap(err, "could not read response body")
+
+		return nil, errors.Wrap(err, "could not read response body: "+url)
 	}
 
 	dst := []map[string]any{}
 	err = json.Unmarshal(b, &dst)
+
 	if err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal response body")
+
+		return nil, errors.Wrap(err, "could not unmarshal response body: "+url)
 	}
 
 	ret := [][]byte{}
 
 	for _, a := range dst {
+
 		record, _ := json.Marshal(a)
 		ret = append(ret, record)
 	}
 
 	state.SeekPos = fmt.Sprintf("%d", offset+limit)
+
+	state.SeekDate = 0 // TODO: Set latest article publish date
 
 	return ret, nil
 }
@@ -87,7 +101,7 @@ func (s *CosmosImporter) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 /*
  * ProcessLogfile
  */
-func (s *CosmosImporter) ProcessLogfile(project *admin.Project, content []byte) []*admin.ArticleInput {
+func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*admin.ArticleInput {
 
 	a := Article{}
 
@@ -96,16 +110,23 @@ func (s *CosmosImporter) ProcessLogfile(project *admin.Project, content []byte) 
 	if err != nil {
 
 		panic(errors.Wrap(err, "could not unmarshal logfile"))
-
 	}
 
-	return []*admin.ArticleInput{s.createArticle(project, a)}
+	article := s.createArticle(project, a)
+
+	ret := []*admin.ArticleInput{}
+
+	if len(article.Placements) > 0 {
+		ret = append(ret, article)
+	}
+
+	return ret
 }
 
 /*
  * createArticle
  */
-func (s *CosmosImporter) createArticle(project *admin.Project, ca Article) *admin.ArticleInput {
+func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.ArticleInput {
 
 	m := &admin.ArticleInput{}
 	m.AdTagCustom = &ca.AdTagCustom
@@ -220,7 +241,7 @@ func getSid(publicationId string, parts ...string) string {
 	return getSha1(publicationId + strings.Join(parts, ""))
 }
 
-func (s *CosmosImporter) getSection(project *admin.Project, sid string) *admin.Section {
+func (s *Importer) getSection(project *admin.Project, sid string) *admin.Section {
 
 	for _, section := range project.Sections {
 		if section.Sid == sid {
@@ -235,7 +256,7 @@ func (s *CosmosImporter) getSection(project *admin.Project, sid string) *admin.S
 /*
  * mapWidget
  */
-func (s *CosmosImporter) mapWidget(m *admin.ArticleInput, typ string, data map[string]any) {
+func (s *Importer) mapWidget(m *admin.ArticleInput, typ string, data map[string]any) {
 
 	switch typ {
 
