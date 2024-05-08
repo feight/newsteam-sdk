@@ -116,7 +116,7 @@ func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*adm
 
 	ret := []*admin.ArticleInput{}
 
-	if len(article.Placements) > 0 {
+	if len(article.SectionIds) > 0 {
 		ret = append(ret, article)
 	}
 
@@ -207,14 +207,14 @@ func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Arti
 
 	m.Labels = map[string]string{"source_id": "cosmos"}
 
-	m.Placements = []string{}
+	m.SectionIds = []string{}
 
 	for _, placement := range ca.Sections {
 
 		section := s.getSection(project, getSid(placement.Publication, placement.Section, placement.Subsection))
 
 		if section != nil {
-			m.Placements = append(m.Placements, section.Id)
+			m.SectionIds = append(m.SectionIds, section.Id)
 		}
 	}
 
@@ -423,8 +423,7 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	image.Keywords = w.Image.Keywords
 	image.Palette = w.Image.Palette
 	image.Creator = w.Image.Author
-	image.FileName = w.Image.Filename
-	image.Blur = w.Image.Blur
+	image.Filename = w.Image.Filename
 	image.Description = w.Image.Description
 	image.Title = w.Image.Title
 	image.FocalY = w.Image.Width
