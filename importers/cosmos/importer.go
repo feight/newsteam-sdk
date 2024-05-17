@@ -418,7 +418,7 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	// Id:          w.String("text"),
 	image.ContentType = w.Image.ContentType
 	image.Width = w.Image.Width
-	image.Height = w.Image.Width
+	image.Height = w.Image.Height
 	// image.// Filesize=    w.Image.Width
 	image.Keywords = w.Image.Keywords
 	image.Palette = w.Image.Palette
@@ -426,8 +426,8 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	image.Filename = w.Image.Filename
 	image.Description = w.Image.Description
 	image.Title = w.Image.Title
-	image.FocalY = w.Image.Width
-	image.FocalX = w.Image.Width
+	image.FocalY = w.Image.FocalY
+	image.FocalX = w.Image.FocalX
 	image.Average = w.Image.Average
 
 	return &admin.ImageWidget{

@@ -51,7 +51,7 @@ func UploadImageFromUrl(url string) *admin.Image {
 /*
  * UploadImageFromUrl_BasicAuth
  */
-func UploadImageFromUrl_BasicAuth(url string, username string, password string) *admin.Image {
+func UploadImageFromUrl_BasicAuth(url, username, password string) *admin.Image {
 
 	return UploadImage(func() io.ReadCloser {
 
