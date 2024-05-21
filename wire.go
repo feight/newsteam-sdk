@@ -13,6 +13,7 @@ import (
 	"buf.build/gen/go/dgroux/newsteam/protocolbuffers/go/admin"
 	v1 "buf.build/gen/go/dgroux/newsteam/protocolbuffers/go/v1"
 	buf "connectrpc.com/connect"
+	"github.com/fatih/color"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -58,7 +59,7 @@ func InitializeFeeds(feeds []Feed) {
 		Handler:      h2c.NewHandler(mux, &http2.Server{}),
 	}
 
-	fmt.Println("⚡ Running [http://localhost:3333]")
+	fmt.Println("⚡ Running [http://localhost:3333]. Waiting for incoming connection from Newsteam...")
 
 	server.ListenAndServe()
 }
@@ -90,4 +91,32 @@ func (s *WireService) ProcessLogfile(ctx context.Context, r *buf.Request[v1.Proc
 	}
 
 	return nil, errors.New("Feed does not exist")
+}
+
+func (s *WireService) OnEvent(ctx context.Context, r *buf.Request[v1.WireEvent]) (*buf.Response[v1.Success], error) {
+
+	message := r.Msg.Message
+
+	switch r.Msg.Type {
+	case v1.WireEventType_WIRE_EVENT_TYPE_ARTICLE_CREATED:
+		color.HiYellow(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_ARTICLE_UPDATED:
+		color.HiCyan(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_ARTICLE_CREATE_ERROR:
+		color.HiRed(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_ARTICLE_UPDATE_ERROR:
+		color.HiRed(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_ARTICLE_PUBLISH_ERROR:
+		color.HiRed(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_LOGFILE_CREATED:
+		color.HiYellow(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_LOGFILE_UNCHANGED:
+		color.HiGreen(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_LOGFILE_PROCESSED:
+		color.HiBlue(message)
+	case v1.WireEventType_WIRE_EVENT_TYPE_UPLOADING_IMAGE:
+		fmt.Println(message)
+	}
+
+	return buf.NewResponse(&v1.Success{}), nil
 }
