@@ -27,7 +27,7 @@ var (
 type Feed interface {
 	ProjectId() string
 	GetLogfiles(state *admin.Cursor) ([][]byte, error)
-	ProcessLogfile(*admin.Project, []byte) []*admin.ArticleInput
+	ProcessLogfile(*admin.Project, []byte) []*admin.Article
 }
 
 func register(pattern string, handler func(http.ResponseWriter, *http.Request)) {

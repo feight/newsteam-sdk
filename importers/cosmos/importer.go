@@ -101,7 +101,7 @@ func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 /*
  * ProcessLogfile
  */
-func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*admin.ArticleInput {
+func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*admin.Article {
 
 	a := Article{}
 
@@ -114,7 +114,7 @@ func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*adm
 
 	article := s.createArticle(project, a)
 
-	ret := []*admin.ArticleInput{}
+	ret := []*admin.Article{}
 
 	if len(article.SectionIds) > 0 {
 		ret = append(ret, article)
@@ -126,9 +126,9 @@ func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*adm
 /*
  * createArticle
  */
-func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.ArticleInput {
+func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Article {
 
-	m := &admin.ArticleInput{}
+	m := &admin.Article{}
 	m.AdTagCustom = &ca.AdTagCustom
 	m.ContentType = &ca.ContentType
 	m.Assigned = ca.Assigned
@@ -140,7 +140,6 @@ func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Arti
 	m.EditorsChoice = &ca.EditorsChoice
 	m.ExternalUrl = &ca.ExternalURL
 	m.Groups = ca.Groups
-	m.HideInApp = &ca.HideInApp
 	// m.ImageHeader
 	// m.ImageThumbnail
 	// m.Source = &ca.Key // TODO: Create source ID
@@ -149,7 +148,7 @@ func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Arti
 	// m.LocationKeywords = ca.LocationKeywords
 	// m.LocationLat = ca.LocationLat
 	// m.LocationName
-	m.Native = &ca.Native
+	m.Sponsored = &ca.Native
 	// m.Notes
 	m.OnHold = &ca.OnHold
 	// m.PlainText = ca.PlainText
@@ -171,7 +170,6 @@ func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Arti
 	// m.Sponsor
 	// m.SponsorIds = ca.SponsorKeys
 	// m.Status = &ca.Status
-	m.Style = &ca.Style
 	// m.Summary
 	m.Syndicate = &ca.Syndicate
 	// m.SyndicateStatus
@@ -256,7 +254,7 @@ func (s *Importer) getSection(project *admin.Project, sid string) *admin.Section
 /*
  * mapWidget
  */
-func (s *Importer) mapWidget(m *admin.ArticleInput, typ string, data map[string]any) {
+func (s *Importer) mapWidget(m *admin.Article, typ string, data map[string]any) {
 
 	switch typ {
 
