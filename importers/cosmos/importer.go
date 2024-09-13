@@ -29,13 +29,6 @@ func (s *Importer) Id() string {
 }
 
 /*
- * GetEnv
- */
-func (s *Importer) GetEnv() (string, error) {
-	return "", nil
-}
-
-/*
  * GetLogfiles
  */
 func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {

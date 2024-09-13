@@ -26,7 +26,7 @@ var (
 
 type Feed interface {
 	Id() string
-	GetEnv() (string, error)
+	GetEnv() (*v1.GetEnvResponse, error)
 	GetLogfiles(state *admin.Cursor) ([][]byte, error)
 	ProcessLogfile(*admin.Feed, []byte) []*admin.Article
 }
@@ -70,12 +70,12 @@ type WireService struct{}
 func (s *WireService) GetEnv(ctx context.Context, r *buf.Request[v1.GetEnvRequest]) (*buf.Response[v1.GetEnvResponse], error) {
 	if feed, ok := state[r.Msg.FeedId]; ok {
 
-		_, err := feed.GetEnv()
+		env, err := feed.GetEnv()
 		if err != nil {
 			return nil, err
 		}
 
-		return buf.NewResponse(&v1.GetEnvResponse{}), nil
+		return buf.NewResponse(env), nil
 	}
 
 	return nil, errors.New("Feed does not exist")
