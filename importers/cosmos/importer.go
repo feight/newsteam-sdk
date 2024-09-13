@@ -20,12 +20,19 @@ import (
 
 type Importer struct {
 	Host        string
-	Project     string
+	Feed        string
 	AccessToken string
 }
 
-func (s *Importer) ProjectId() string {
-	return s.Project
+func (s *Importer) Id() string {
+	return s.Feed
+}
+
+/*
+ * GetEnv
+ */
+func (s *Importer) GetEnv() (string, error) {
+	return "", nil
 }
 
 /*
@@ -101,7 +108,7 @@ func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 /*
  * ProcessLogfile
  */
-func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*admin.Article {
+func (s *Importer) ProcessLogfile(feed *admin.Feed, content []byte) []*admin.Article {
 
 	a := Article{}
 
@@ -112,7 +119,7 @@ func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*adm
 		panic(errors.Wrap(err, "could not unmarshal logfile"))
 	}
 
-	article := s.createArticle(project, a)
+	article := s.createArticle(feed, a)
 
 	ret := []*admin.Article{}
 
@@ -126,7 +133,7 @@ func (s *Importer) ProcessLogfile(project *admin.Project, content []byte) []*adm
 /*
  * createArticle
  */
-func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Article {
+func (s *Importer) createArticle(feed *admin.Feed, ca Article) *admin.Article {
 
 	m := &admin.Article{}
 	m.AdTagCustom = &ca.AdTagCustom
@@ -209,7 +216,7 @@ func (s *Importer) createArticle(project *admin.Project, ca Article) *admin.Arti
 
 	for _, placement := range ca.Sections {
 
-		section := s.getSection(project, getSid(placement.Publication, placement.Section, placement.Subsection))
+		section := s.getSection(feed, getSid(placement.Publication, placement.Section, placement.Subsection))
 
 		if section != nil {
 			m.SectionIds = append(m.SectionIds, section.Id)
@@ -239,15 +246,15 @@ func getSid(publicationId string, parts ...string) string {
 	return getSha1(publicationId + strings.Join(parts, ""))
 }
 
-func (s *Importer) getSection(project *admin.Project, sid string) *admin.Section {
+func (s *Importer) getSection(feed *admin.Feed, sid string) *admin.Section {
 
-	for _, section := range project.Sections {
+	for _, section := range feed.Sections {
 		if section.Sid == sid {
 			return section
 		}
 	}
 
-	// TODO: FIX!! This will not allow cross project placements.
+	// TODO: FIX!! This will not allow cross feed placements.
 	return nil
 }
 

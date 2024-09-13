@@ -10,9 +10,9 @@ Newsteam SDK empowers developers to integrate wire feeds from any source into th
 
 #### Configuring Wire Feeds in Newsteam Desk:
 
-To initiate the process, configure your project within Newsteam to establish a connection to a wire feed:
+To initiate the process, configure your feed within Newsteam to establish a connection to a wire:
 
-1. Navigate to Newsteam Desk, select your project, and click on "Feed".
+1. Navigate to Newsteam Desk, select your feed, and click on "Wire".
 
 #### Establishing a New Go Module:
 
@@ -24,7 +24,7 @@ For the integration, you will need to establish a Go module:
 
 Next, implement an importer by defining the following methods:
 
--   `ProjectId()` returning a string that identifies your project.
+-   `Id()` returning a string that identifies your feed.
 -   `GetLogfiles()` which retrieves log files as slices of byte slices, with a potential error return.
 -   `ProcessLogfile([]byte)` that processes each log file into a slice of `*admin.ArticleInput` pointers.
 
@@ -33,7 +33,7 @@ Create a `main.go` file, and initialize the wire feeds by incorporating the foll
 ```go
 newsteam.InitializeFeeds([]newsteam.Feed{
     &cosmos.CosmosImporter{
-        Project: "bd", Host: "https://businesslive.co.za/apiv1",
+        Feed: "bd", Host: "https://businesslive.co.za/apiv1",
     },
 })
 ```

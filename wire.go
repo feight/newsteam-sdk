@@ -25,9 +25,10 @@ var (
 )
 
 type Feed interface {
-	ProjectId() string
+	Id() string
+	GetEnv() (string, error)
 	GetLogfiles(state *admin.Cursor) ([][]byte, error)
-	ProcessLogfile(*admin.Project, []byte) []*admin.Article
+	ProcessLogfile(*admin.Feed, []byte) []*admin.Article
 }
 
 func register(pattern string, handler func(http.ResponseWriter, *http.Request)) {
@@ -41,7 +42,7 @@ func InitializeFeeds(feeds []Feed) {
 	state = map[string]Feed{}
 
 	for _, feed := range feeds {
-		state[feed.ProjectId()] = feed
+		state[feed.Id()] = feed
 	}
 
 	mux = http.NewServeMux()
@@ -66,8 +67,22 @@ func InitializeFeeds(feeds []Feed) {
 
 type WireService struct{}
 
+func (s *WireService) GetEnv(ctx context.Context, r *buf.Request[v1.GetEnvRequest]) (*buf.Response[v1.GetEnvResponse], error) {
+	if feed, ok := state[r.Msg.FeedId]; ok {
+
+		_, err := feed.GetEnv()
+		if err != nil {
+			return nil, err
+		}
+
+		return buf.NewResponse(&v1.GetEnvResponse{}), nil
+	}
+
+	return nil, errors.New("Feed does not exist")
+}
+
 func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogfilesRequest]) (*buf.Response[v1.GetLogfilesResponse], error) {
-	if feed, ok := state[r.Msg.ProjectId]; ok {
+	if feed, ok := state[r.Msg.FeedId]; ok {
 
 		logfiles, err := feed.GetLogfiles(r.Msg.Cursor)
 		if err != nil {
@@ -84,9 +99,9 @@ func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogf
 }
 
 func (s *WireService) ProcessLogfile(ctx context.Context, r *buf.Request[v1.ProcessLogfileRequest]) (*buf.Response[v1.ProcessLogfileResponse], error) {
-	if feed, ok := state[r.Msg.Project.Id]; ok {
+	if feed, ok := state[r.Msg.Feed.Id]; ok {
 		return buf.NewResponse(&v1.ProcessLogfileResponse{
-			Articles: feed.ProcessLogfile(r.Msg.Project, r.Msg.Data),
+			Articles: feed.ProcessLogfile(r.Msg.Feed, r.Msg.Data),
 		}), nil
 	}
 
