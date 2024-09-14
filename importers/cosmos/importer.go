@@ -5,14 +5,13 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"buf.build/gen/go/dgroux/newsteam/protocolbuffers/go/admin"
 	"github.com/feight/newsteam-sdk"
+	"github.com/feight/newsteam-sdk/lib"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
@@ -51,48 +50,24 @@ func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 
 	fmt.Println("getting logfiles... offset", offset)
 
-	url := fmt.Sprintf(
-		"%s/pub/articles/get-all?access_token=%s&limit=%d&offset=%d",
-		s.Host,
-		s.AccessToken,
-		limit,
-		offset,
-	)
+	url := fmt.Sprintf("%s/pub/articles/get-all?limit=%d&offset=%d", s.Host, limit, offset)
 
-	response, err := http.Get(url)
+	dst, err := lib.Json[[]map[string]any](url, s.AccessToken)
 
 	if err != nil {
-
-		return nil, errors.Wrap(err, "could not get articles from cosmos: "+url)
-	}
-
-	defer response.Body.Close()
-
-	b, err := io.ReadAll(response.Body)
-
-	if err != nil {
-
-		return nil, errors.Wrap(err, "could not read response body: "+url)
-	}
-
-	dst := []map[string]any{}
-	err = json.Unmarshal(b, &dst)
-
-	if err != nil {
-
-		return nil, errors.Wrap(err, "could not unmarshal response body: "+url)
+		return nil, errors.Wrapf(err, "could not get articles from cosmos: %s", url)
 	}
 
 	ret := [][]byte{}
 
-	for _, a := range dst {
+	for _, a := range *dst {
 
-		record, _ := json.Marshal(a)
-		ret = append(ret, record)
+		entry, _ := json.Marshal(a)
+
+		ret = append(ret, entry)
 	}
 
 	state.SeekPos = fmt.Sprintf("%d", offset+limit)
-
 	state.SeekDate = 0 // TODO: Set latest article publish date
 
 	return ret, nil
@@ -831,24 +806,22 @@ type Publication struct {
 		Description string `json:"description"`
 		Keywords    string `json:"keywords"`
 	} `json:"meta"`
-	Name     string `json:"name"`
-	Primary  bool   `json:"primary"`
-	Routed   bool   `json:"routed"`
-	Sections []struct {
-		ID       string `json:"id"`
-		Name     string `json:"name"`
-		Sections []struct {
-			ID     string `json:"id"`
-			Name   string `json:"name"`
-			URLKey string `json:"urlKey"`
-		} `json:"sections,omitempty"`
-		URLKey string `json:"urlKey"`
-	} `json:"sections"`
-	Show    bool `json:"show"`
-	Strings struct {
+	Name     string    `json:"name"`
+	Primary  bool      `json:"primary"`
+	Routed   bool      `json:"routed"`
+	Sections []Section `json:"sections"`
+	Show     bool      `json:"show"`
+	Strings  struct {
 	} `json:"strings"`
 	URLKey        string `json:"urlKey"`
 	UsePrimaryNav bool   `json:"usePrimaryNav"`
+}
+
+type Section struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Sections []Section `json:"sections,omitempty"`
+	URLKey   string    `json:"urlKey"`
 }
 
 type Article struct {
