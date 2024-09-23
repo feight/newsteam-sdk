@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -33,20 +32,9 @@ func (s *Importer) Id() string {
 func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 
 	var (
-		offset = 0
-		limit  = 100
+		offset       = state.SeekPos
+		limit  int64 = 100
 	)
-
-	if state.SeekPos != "" {
-
-		var err error
-
-		offset, err = strconv.Atoi(state.SeekPos)
-
-		if err != nil {
-			return nil, errors.Wrap(err, "could not convert SeekPos to integer")
-		}
-	}
 
 	fmt.Println("getting logfiles... offset", offset)
 
@@ -67,7 +55,7 @@ func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 		ret = append(ret, entry)
 	}
 
-	state.SeekPos = fmt.Sprintf("%d", offset+limit)
+	state.SeekPos = offset + limit
 	state.SeekDate = 0 // TODO: Set latest article publish date
 
 	return ret, nil
@@ -83,19 +71,12 @@ func (s *Importer) ProcessLogfile(feed *admin.Feed, content []byte) []*admin.Art
 	err := json.Unmarshal(content, &a)
 
 	if err != nil {
-
 		panic(errors.Wrap(err, "could not unmarshal logfile"))
 	}
 
 	article := s.createArticle(feed, a)
 
-	ret := []*admin.Article{}
-
-	if len(article.SectionIds) > 0 {
-		ret = append(ret, article)
-	}
-
-	return ret
+	return []*admin.Article{article}
 }
 
 /*

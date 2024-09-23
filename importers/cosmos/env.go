@@ -15,7 +15,11 @@ import (
  */
 func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 
-	ret := &v1.GetEnvResponse{}
+	ret := &v1.GetEnvResponse{
+		Capabilities: &v1.WireCapabilities{
+			Article: true,
+		},
+	}
 
 	env, err := getEnvironment(s)
 	if err != nil {
@@ -23,6 +27,7 @@ func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 	}
 
 	publication := &v1.Publication{
+		Id:          env.Publication.ID,
 		Name:        env.Publication.Name,
 		Description: &env.Publication.Meta.Description,
 	}
