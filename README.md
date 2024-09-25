@@ -1,34 +1,28 @@
 # Newsteam SDK
 
-The Newsteam SDK equips developers with a comprehensive toolkit designed to integrate seamlessly with the core Newsteam APIs, facilitating both the incorporation of Newsteam's native functionalities and the importation of content from external sources.
+The Newsteam SDK helps developers integrate Newsteam APIs and import content from other sources.
 
 ## Wire Feeds Integration
 
-Newsteam SDK empowers developers to integrate wire feeds from any source into the Newsteam platform. By leveraging the SDK, developers can create custom extensions that enable the seamless importation of wire feeds, enhancing the versatility and functionality of the Newsteam environment.
+Use the SDK to bring in wire feeds from any source. You can build custom extensions to import these feeds into Newsteam.
 
-### Implementation Guide
+### How to Set It Up
 
-#### Configuring Wire Feeds in Newsteam Desk:
+1. In Newsteam Desk, go to your feed and click "Wire" to configure.
 
-To initiate the process, configure your feed within Newsteam to establish a connection to a wire:
+2. On your computer:
 
-1. Navigate to Newsteam Desk, select your feed, and click on "Wire".
+    - Make a new directory
+    - Run `go mod init app`
+    - Install the SDK: `go get github.com/feight/newsteam-sdk`
 
-#### Establishing a New Go Module:
+3. Create an importer with these methods:
 
-For the integration, you will need to establish a Go module:
+    - `Id()`: Returns a string to identify your feed
+    - `GetLogfiles()`: Gets log files as byte slices
+    - `ProcessLogfile([]byte)`: Turns each log file into an `*admin.ArticleInput`
 
-1. Create an empty directory within your workspace on your local environment.
-2. Initialize the Go module by executing `go mod init app` in your terminal.
-3. Install the Newsteam SDK with the command `go get github.com/feight/newsteam-sdk`.
-
-Next, implement an importer by defining the following methods:
-
--   `Id()` returning a string that identifies your feed.
--   `GetLogfiles()` which retrieves log files as slices of byte slices, with a potential error return.
--   `ProcessLogfile([]byte)` that processes each log file into a slice of `*admin.ArticleInput` pointers.
-
-Create a `main.go` file, and initialize the wire feeds by incorporating the following snippet:
+4. In `main.go`, set up wire feeds like this:
 
 ```go
 newsteam.InitializeFeeds([]newsteam.Feed{
@@ -37,3 +31,5 @@ newsteam.InitializeFeeds([]newsteam.Feed{
     },
 })
 ```
+
+That's it! You're ready to start importing wire feeds.
