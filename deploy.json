@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/feight/deploy/v1.0.3/schema.json",
+    "$schema": "https://raw.githubusercontent.com/feight/deploy/v1.0.4/schema.json",
 
     "services": {
         "data": {
