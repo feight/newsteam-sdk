@@ -2,13 +2,13 @@
 
 The Newsteam SDK helps developers integrate Newsteam APIs and import content from other sources.
 
-## Wire Feeds Integration
+## Wire Integration
 
-Use the SDK to bring in wire feeds from any source. You can build custom extensions to import these feeds into Newsteam.
+Use the SDK to bring in articles from any source. You can build custom extensions to import these articles into Newsteam.
 
 ### How to Set It Up
 
-1. In Newsteam Desk, go to your feed and click "Wire" to configure.
+1. In Newsteam Desk, go to your bucket and click "Wire" to configure.
 
 2. On your computer:
 
@@ -18,18 +18,18 @@ Use the SDK to bring in wire feeds from any source. You can build custom extensi
 
 3. Create an importer with these methods:
 
-    - `Id()`: Returns a string to identify your feed
+    - `Id()`: Returns a string to identify your bucket
     - `GetLogfiles()`: Gets log files as byte slices
     - `ProcessLogfile([]byte)`: Turns each log file into an `*admin.ArticleInput`
 
-4. In `main.go`, set up wire feeds like this:
+4. In `main.go`, set up a wire like this:
 
 ```go
-newsteam.InitializeFeeds([]newsteam.Feed{
+newsteam.InitializeBuckets([]newsteam.Bucket{
     &cosmos.CosmosImporter{
-        Feed: "bd", Host: "https://businesslive.co.za/apiv1",
+        Bucket: "bd", Host: "https://businesslive.co.za/apiv1",
     },
 })
 ```
 
-That's it! You're ready to start importing wire feeds.
+That's it! You're ready to start importing articles.

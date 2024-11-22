@@ -18,12 +18,12 @@ import (
 
 type Importer struct {
 	Host        string
-	Feed        string
+	Bucket      string
 	AccessToken string
 }
 
 func (s *Importer) Id() string {
-	return s.Feed
+	return s.Bucket
 }
 
 /*
@@ -64,7 +64,7 @@ func (s *Importer) GetLogfiles(state *admin.Cursor) ([][]byte, error) {
 /*
  * ProcessLogfile
  */
-func (s *Importer) ProcessLogfile(feed *admin.Feed, content []byte) []*admin.Article {
+func (s *Importer) ProcessLogfile(bucket *admin.Bucket, content []byte) []*admin.Article {
 
 	a := Article{}
 
@@ -74,7 +74,7 @@ func (s *Importer) ProcessLogfile(feed *admin.Feed, content []byte) []*admin.Art
 		panic(errors.Wrap(err, "could not unmarshal logfile"))
 	}
 
-	article := s.createArticle(feed, a)
+	article := s.createArticle(bucket, a)
 
 	return []*admin.Article{article}
 }
@@ -82,7 +82,7 @@ func (s *Importer) ProcessLogfile(feed *admin.Feed, content []byte) []*admin.Art
 /*
  * createArticle
  */
-func (s *Importer) createArticle(feed *admin.Feed, ca Article) *admin.Article {
+func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Article {
 
 	m := &admin.Article{}
 	m.AdTagCustom = &ca.AdTagCustom
@@ -165,7 +165,7 @@ func (s *Importer) createArticle(feed *admin.Feed, ca Article) *admin.Article {
 
 	for _, placement := range ca.Sections {
 
-		section := s.getSection(feed, getSid(placement.Publication, placement.Section, placement.Subsection))
+		section := s.getSection(bucket, getSid(placement.Publication, placement.Section, placement.Subsection))
 
 		if section != nil {
 			m.SectionIds = append(m.SectionIds, section.Id)
@@ -195,15 +195,15 @@ func getSid(publicationId string, parts ...string) string {
 	return getSha1(publicationId + strings.Join(parts, ""))
 }
 
-func (s *Importer) getSection(feed *admin.Feed, sid string) *admin.Section {
+func (s *Importer) getSection(bucket *admin.Bucket, sid string) *admin.Section {
 
-	for _, section := range feed.Sections {
+	for _, section := range bucket.Sections {
 		if section.Sid == sid {
 			return section
 		}
 	}
 
-	// TODO: FIX!! This will not allow cross feed placements.
+	// TODO: FIX!! This will not allow cross bucket placements.
 	return nil
 }
 

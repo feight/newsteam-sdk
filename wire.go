@@ -19,16 +19,16 @@ import (
 )
 
 var (
-	state map[string]Feed
+	state map[string]Bucket
 	mux   *http.ServeMux
 	mu    sync.Mutex
 )
 
-type Feed interface {
+type Bucket interface {
 	Id() string
 	GetEnv() (*v1.GetEnvResponse, error)
 	GetLogfiles(state *admin.Cursor) ([][]byte, error)
-	ProcessLogfile(*admin.Feed, []byte) []*admin.Article
+	ProcessLogfile(*admin.Bucket, []byte) []*admin.Article
 }
 
 func register(pattern string, handler func(http.ResponseWriter, *http.Request)) {
@@ -38,11 +38,11 @@ func register(pattern string, handler func(http.ResponseWriter, *http.Request)) 
 	mux.HandleFunc(pattern, handler)
 }
 
-func InitializeFeeds(feeds []Feed) {
-	state = map[string]Feed{}
+func InitializeBuckets(buckets []Bucket) {
+	state = map[string]Bucket{}
 
-	for _, feed := range feeds {
-		state[feed.Id()] = feed
+	for _, bucket := range buckets {
+		state[bucket.Id()] = bucket
 	}
 
 	mux = http.NewServeMux()
@@ -68,9 +68,9 @@ func InitializeFeeds(feeds []Feed) {
 type WireService struct{}
 
 func (s *WireService) GetEnv(ctx context.Context, r *buf.Request[v1.GetEnvRequest]) (*buf.Response[v1.GetEnvResponse], error) {
-	if feed, ok := state[r.Msg.FeedId]; ok {
+	if bucket, ok := state[r.Msg.BucketId]; ok {
 
-		env, err := feed.GetEnv()
+		env, err := bucket.GetEnv()
 		if err != nil {
 			return nil, err
 		}
@@ -78,13 +78,13 @@ func (s *WireService) GetEnv(ctx context.Context, r *buf.Request[v1.GetEnvReques
 		return buf.NewResponse(env), nil
 	}
 
-	return nil, errors.New("Feed does not exist")
+	return nil, errors.New("Bucket does not exist")
 }
 
 func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogfilesRequest]) (*buf.Response[v1.GetLogfilesResponse], error) {
-	if feed, ok := state[r.Msg.FeedId]; ok {
+	if bucket, ok := state[r.Msg.BucketId]; ok {
 
-		logfiles, err := feed.GetLogfiles(r.Msg.Cursor)
+		logfiles, err := bucket.GetLogfiles(r.Msg.Cursor)
 		if err != nil {
 			return nil, err
 		}
@@ -95,17 +95,17 @@ func (s *WireService) GetLogfiles(ctx context.Context, r *buf.Request[v1.GetLogf
 		}), nil
 	}
 
-	return nil, errors.New("Feed does not exist")
+	return nil, errors.New("Bucket does not exist")
 }
 
 func (s *WireService) ProcessLogfile(ctx context.Context, r *buf.Request[v1.ProcessLogfileRequest]) (*buf.Response[v1.ProcessLogfileResponse], error) {
-	if feed, ok := state[r.Msg.Feed.Id]; ok {
+	if bucket, ok := state[r.Msg.Bucket.Id]; ok {
 		return buf.NewResponse(&v1.ProcessLogfileResponse{
-			Articles: feed.ProcessLogfile(r.Msg.Feed, r.Msg.Data),
+			Articles: bucket.ProcessLogfile(r.Msg.Bucket, r.Msg.Data),
 		}), nil
 	}
 
-	return nil, errors.New("Feed does not exist")
+	return nil, errors.New("Bucket does not exist")
 }
 
 func (s *WireService) OnEvent(ctx context.Context, r *buf.Request[v1.WireEvent]) (*buf.Response[v1.Success], error) {

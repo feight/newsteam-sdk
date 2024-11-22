@@ -68,12 +68,12 @@ func appendSections(sections []Section) []*v1.Publication_MenuItem {
 }
 
 /*
- * updateFeeds
+ * updateBuckets
  */
-func updateFeeds() {
+func updateBuckets() {
 
 	/*
-	 * Update feeds
+	 * Update buckets
 	 */
 	env, err := getEnvironment(nil)
 
@@ -83,7 +83,7 @@ func updateFeeds() {
 
 	for _, pub := range env.Publications {
 
-		_ = &admin.Feed{
+		_ = &admin.Bucket{
 			Id:   pub.ID,
 			Name: pub.Name,
 		}
@@ -93,9 +93,9 @@ func updateFeeds() {
 /*
  * TEMP
  */
-func getWire(feed *admin.Feed) *admin.Feed_Wire {
-	if feed.Id == "bd" {
-		return &admin.Feed_Wire{
+func getWire(bucket *admin.Bucket) *admin.Bucket_Wire {
+	if bucket.Id == "bd" {
+		return &admin.Bucket_Wire{
 			Active:          true,
 			AddToList:       true,
 			AutoPublish:     true,
@@ -111,7 +111,7 @@ func getWire(feed *admin.Feed) *admin.Feed_Wire {
 /*
  * createSections
  */
-func createSections(feed *admin.Feed, pub Publication) {
+func createSections(bucket *admin.Bucket, pub Publication) {
 
 	for range pub.Sections {
 
@@ -120,7 +120,7 @@ func createSections(feed *admin.Feed, pub Publication) {
 		// }
 
 		// ss, err := client.Section.Create(&admin.CreateSectionRequest{
-		// 	FeedId: feed.Id,
+		// 	BucketId: bucket.Id,
 		// 	Section: &admin.SectionInput{
 		// 		Name:  &section.ID,
 		// 		Title: &section.Name,
@@ -139,7 +139,7 @@ func createSections(feed *admin.Feed, pub Publication) {
 		// 	}
 
 		// 	_, err := client.Section.Create(&admin.CreateSectionRequest{
-		// 		FeedId: feed.Id,
+		// 		BucketId: bucket.Id,
 		// 		Section: &admin.SectionInput{
 		// 			Name:     &subsection.ID,
 		// 			Title:    &subsection.Name,
