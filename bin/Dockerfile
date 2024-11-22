@@ -2,6 +2,6 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY worker.app .
+COPY worker .
 
-ENTRYPOINT ["./worker.app"]
+ENTRYPOINT ["./worker"]

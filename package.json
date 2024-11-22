@@ -1,0 +1,6 @@
+{
+    "name": "newsteam-sdk",
+    "scripts": {
+        "build": "GOOS=linux GOARCH=amd64 go build -o bin/worker ./cmd/server"
+    }
+}

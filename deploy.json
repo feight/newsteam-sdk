@@ -1,0 +1,21 @@
+{
+    "$schema": "https://raw.githubusercontent.com/feight/deploy/v1.0.3/schema.json",
+
+    "services": {
+        "data": {
+            "name": "Cosmos Importer",
+            "path": "./cmd/worker",
+            "dockerfile": "../../bin",
+            "targets": {
+                "stage": {
+                    "cloudrun": {
+                        "useHttp2": true,
+                        "region": "africa-south1",
+                        "projectId": "newsteam-stage",
+                        "environment": []
+                    }
+                }
+            }
+        }
+    }
+}
