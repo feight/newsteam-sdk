@@ -20,15 +20,13 @@ Use the SDK to bring in articles from any source. You can build custom extension
 
     - `Id()`: Returns a string to identify your bucket
     - `GetLogfiles()`: Gets log files as byte slices
-    - `ProcessLogfile([]byte)`: Turns each log file into an `*admin.ArticleInput`
+    - `ProcessLogfile([]byte)`: Turns each log file into an `*admin.Article`
 
 4. In `main.go`, set up a wire like this:
 
 ```go
 newsteam.InitializeBuckets([]newsteam.Bucket{
-    &cosmos.CosmosImporter{
-        Bucket: "bd", Host: "https://businesslive.co.za/apiv1",
-    },
+    &MyImporter{},
 })
 ```
 
