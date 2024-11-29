@@ -1,6 +1,6 @@
 
 start:
-	@go run ./cmd/worker
+	@go run ./cmd/server
 
 deploy:
 	@go run github.com/feight/deploy@v1.0.4
