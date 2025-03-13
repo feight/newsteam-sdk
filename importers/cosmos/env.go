@@ -44,7 +44,7 @@ func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 		})
 	}
 
-	ret.Publications = append(ret.Publications, publication)
+	// ret.Publications = append(ret.Publications, publication)
 
 	return ret, nil
 }
@@ -93,9 +93,9 @@ func updateBuckets() {
 /*
  * TEMP
  */
-func getWire(bucket *admin.Bucket) *admin.Bucket_Wire {
+func getWire(bucket *admin.Bucket) *admin.Wire {
 	if bucket.Id == "bd" {
-		return &admin.Bucket_Wire{
+		return &admin.Wire{
 			Active:          true,
 			AddToList:       true,
 			AutoPublish:     true,

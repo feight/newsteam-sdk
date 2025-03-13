@@ -8,6 +8,6 @@ import (
 func main() {
 
 	newsteam.InitializeBuckets([]newsteam.Bucket{
-		&cosmos.Importer{Host: "https://www.businesslive.co.za/apiv1", Bucket: "bd", AccessToken: "62a75039712d063ab27da709ecaf24c607acbd2a"},
+		&cosmos.Importer{Host: "https://cosmos-dot-iol-prod.appspot.com/apiv1", Bucket: "news", AccessToken: "ba9b292dd015069f5a941921fcb313c6dde7de2c"},
 	})
 }
