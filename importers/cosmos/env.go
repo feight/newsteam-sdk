@@ -131,9 +131,9 @@ func updateBuckets() {
 /*
  * TEMP
  */
-func getWire(bucket *admin.Bucket) *admin.Bucket_Wire {
+func getWire(bucket *admin.Bucket) *admin.Wire {
 	if bucket.Id == "bd" {
-		return &admin.Bucket_Wire{
+		return &admin.Wire{
 			Active:          true,
 			AddToList:       true,
 			AutoPublish:     true,

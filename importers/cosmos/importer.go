@@ -10,7 +10,6 @@ import (
 	"github.com/feight/newsteam-sdk/lib"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
-	"google.golang.org/protobuf/proto"
 )
 
 type Importer struct {
@@ -82,16 +81,11 @@ func (s *Importer) ProcessLogfile(bucket *admin.Bucket, content []byte) []*admin
 func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Article {
 
 	m := &admin.Article{}
-	m.AdTagCustom = &ca.AdTagCustom
-	m.ContentType = &ca.ContentType
-	m.Assigned = ca.Assigned
 	// m.AuthorIds = ca.AuthorKeys
 	m.Authors = ca.Authors
 	m.Breaking = &ca.Breaking
 	m.CanonicalUrl = &ca.CanonicalURL
-	m.CommentsEnabled = &ca.CommentsEnabled
-	m.EditorsChoice = &ca.EditorsChoice
-	m.ExternalUrl = &ca.ExternalURL
+	m.RedirectUrl = &ca.ExternalURL
 	m.Groups = ca.Groups
 	// m.ImageHeader
 	// m.ImageThumbnail
@@ -103,33 +97,35 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 	// m.LocationName
 	m.Sponsored = &ca.Native
 	// m.Notes
-	m.OnHold = &ca.OnHold
 	// m.PlainText = ca.PlainText
-	m.Priority = &ca.Priority
 	// m.Published
-	m.PushNotify = &ca.PushNotify
 	// m.RelatedArticles = ca.RelatedArticles
 	// m.RelatedArticlesKeys
 	m.Sensitive = &ca.Sensitive
-	m.SourceId = proto.String(fmt.Sprint(ca.Key))
+	m.Source = &admin.SourceProperty{
+		Id: fmt.Sprint(ca.Key),
+	}
 	// m.ShareID
-	m.ShowCreatorCard = &ca.ShowAuthorCard
 	// m.Slug
 	// m.SlugCustom
 	// m.SlugOld
-	m.SocialShareText = &ca.SocialShareText
-	m.Source = &ca.Source
+	m.ShareText = &admin.ShareTextProperty{
+		Text: ca.SocialShareText,
+	}
 	// m.SourceID
 	// m.Sponsor
 	// m.SponsorIds = ca.SponsorKeys
 	// m.Status = &ca.Status
 	// m.Summary
-	m.Syndicate = &ca.Syndicate
 	// m.SyndicateStatus
 	// m.Synopsis
 	m.SynopsisCustom = &ca.SynopsisCustom
 	m.Tags = ca.Tags
-	m.TitleCustom = &ca.TitleCustom
+	m.TitleListing = &admin.TextProperty{
+		Html: ca.TitleCustom,
+		Raw:  ca.TitleCustom,
+		Text: ca.TitleCustom,
+	}
 	// m.TitleListing
 	// m.TitleListingText
 	// m.TitleSectionText
@@ -156,7 +152,7 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 		Text: ca.IntroText,
 	}
 
-	m.Labels = map[string]string{"source_id": "cosmos"}
+	m.Attributes = map[string]string{"source_id": "cosmos"}
 
 	for _, section := range ca.Sections {
 		if placement := getPlacement(s, section.Publication, section.Section, section.Subsection); s != nil {
@@ -332,7 +328,7 @@ func mapTextWidget(t string, w TextWidget) *admin.TextWidget {
 func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 
 	// Upload image...
-	image := newsteam.UploadImageFromUrl(fmt.Sprintf("https:%s=s2000", w.Image.Filepath))
+	image := newsteam.UploadImageFromUrl(fmt.Sprintf("%s/raw", w.Image.Filepath))
 	// Id:          w.String("text"),
 	image.ContentType = w.Image.ContentType
 	image.Width = w.Image.Width
@@ -340,9 +336,9 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	// image.// Filesize=    w.Image.Width
 	image.Keywords = w.Image.Keywords
 	image.Palette = w.Image.Palette
-	image.Creator = w.Image.Author
+	image.Credit = &w.Image.Author
 	image.Filename = w.Image.Filename
-	image.Description = w.Image.Description
+	image.Caption = &w.Image.Description
 	image.Title = w.Image.Title
 	image.FocalY = w.Image.FocalY
 	image.FocalX = w.Image.FocalX
