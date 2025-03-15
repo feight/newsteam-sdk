@@ -1,11 +1,8 @@
 package cosmos
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"buf.build/gen/go/dgroux/newsteam/protocolbuffers/go/admin"
@@ -161,14 +158,9 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 
 	m.Labels = map[string]string{"source_id": "cosmos"}
 
-	m.SectionIds = []string{}
-
-	for _, placement := range ca.Sections {
-
-		section := s.getSection(bucket, getSid(placement.Publication, placement.Section, placement.Subsection))
-
-		if section != nil {
-			m.SectionIds = append(m.SectionIds, section.Id)
+	for _, section := range ca.Sections {
+		if placement := getPlacement(s, section.Publication, section.Section, section.Subsection); s != nil {
+			m.SourcePlacements = append(m.SourcePlacements, placement)
 		}
 	}
 
@@ -177,34 +169,6 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 	}
 
 	return m
-}
-
-func getSha1(str string) string {
-
-	hash := sha1.New()
-	hash.Write([]byte(str))
-	hashStr := hex.EncodeToString(hash.Sum(nil))
-
-	return hashStr
-}
-
-/*
- * Gets a unique section ID
- */
-func getSid(publicationId string, parts ...string) string {
-	return getSha1(publicationId + strings.Join(parts, ""))
-}
-
-func (s *Importer) getSection(bucket *admin.Bucket, sid string) *admin.Section {
-
-	for _, section := range bucket.Sections {
-		if section.Sid == sid {
-			return section
-		}
-	}
-
-	// TODO: FIX!! This will not allow cross bucket placements.
-	return nil
 }
 
 /*
