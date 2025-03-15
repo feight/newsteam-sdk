@@ -49,7 +49,7 @@ func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 	return ret, nil
 }
 
-func getPlacement(s *Importer, publication, section, subsection string) *admin.Article_SourcePlacement {
+func getPlacement(s *Importer, publication, section, subsection string) *admin.ArticlePlacement {
 
 	env, err := getEnvironment(s)
 
@@ -57,8 +57,8 @@ func getPlacement(s *Importer, publication, section, subsection string) *admin.A
 		panic(err)
 	}
 
-	new := func(id, name string) *admin.Article_SourcePlacement_Descriptor {
-		return &admin.Article_SourcePlacement_Descriptor{
+	new := func(id, name string) *admin.ArticlePlacement_SourceDescriptor {
+		return &admin.ArticlePlacement_SourceDescriptor{
 			Id:   id,
 			Name: name,
 		}
@@ -66,16 +66,16 @@ func getPlacement(s *Importer, publication, section, subsection string) *admin.A
 
 	for _, pub := range env.Publications {
 		if pub.ID == publication {
-			ret := &admin.Article_SourcePlacement{
-				Path: []*admin.Article_SourcePlacement_Descriptor{new(pub.ID, pub.Name)}}
+			ret := &admin.ArticlePlacement{
+				Source: []*admin.ArticlePlacement_SourceDescriptor{new(pub.ID, pub.Name)}}
 
 			for _, s := range pub.Sections {
 				if s.ID == section {
-					ret.Path = append(ret.Path, new(s.ID, s.Name))
+					ret.Source = append(ret.Source, new(s.ID, s.Name))
 
 					for _, ss := range s.Sections {
 						if ss.ID == subsection {
-							ret.Path = append(ret.Path, new(ss.ID, ss.Name))
+							ret.Source = append(ret.Source, new(ss.ID, ss.Name))
 						}
 					}
 				}

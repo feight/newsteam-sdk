@@ -14,7 +14,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pkg/errors v0.9.1
 	golang.org/x/net v0.37.0
-	google.golang.org/protobuf v1.36.5
 )
 
 require (
@@ -23,4 +22,5 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 )

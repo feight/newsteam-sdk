@@ -156,7 +156,7 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 
 	for _, section := range ca.Sections {
 		if placement := getPlacement(s, section.Publication, section.Section, section.Subsection); s != nil {
-			m.SourcePlacements = append(m.SourcePlacements, placement)
+			m.Placements = append(m.Placements, placement)
 		}
 	}
 
