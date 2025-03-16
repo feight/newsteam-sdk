@@ -5,8 +5,8 @@ go 1.23.0
 toolchain go1.23.3
 
 require (
-	buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250313094407-aa80da145cb6.1
-	buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.5-20250313094407-aa80da145cb6.1
+	buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250315102731-b6a885406290.1
+	buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.5-20250315102731-b6a885406290.1
 	connectrpc.com/connect v1.18.1
 	github.com/fatih/color v1.18.0
 	github.com/go-resty/resty/v2 v2.16.5

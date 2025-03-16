@@ -337,7 +337,7 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	image.Keywords = w.Image.Keywords
 	image.Palette = w.Image.Palette
 	image.Credit = &w.Image.Author
-	image.Filename = w.Image.Filename
+	image.Sha256Hash = w.Image.Filename
 	image.Caption = &w.Image.Description
 	image.Title = w.Image.Title
 	image.FocalY = w.Image.FocalY
