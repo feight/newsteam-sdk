@@ -766,11 +766,11 @@ type Section struct {
 }
 
 type Article struct {
-	Access                bool        `json:"access"`
-	Active                bool        `json:"active"`
-	AdTagCustom           string      `json:"ad_tag_custom"`
-	Assigned              []string    `json:"assigned"`
-	Author                Author      `json:"author"`
+	Access      bool     `json:"access"`
+	Active      bool     `json:"active"`
+	AdTagCustom string   `json:"ad_tag_custom"`
+	Assigned    []string `json:"assigned"`
+	// Author                *Author     `json:"author"`
 	AuthorKeys            []int64     `json:"author_keys"`
 	Authors               []string    `json:"authors"`
 	Breaking              bool        `json:"breaking"`
@@ -889,24 +889,24 @@ type Article struct {
 }
 
 type Author struct {
-	Active         bool   `json:"active"`
-	Bio            string `json:"bio"`
-	Category       string `json:"category"`
-	Email          string `json:"email"`
-	Image          Image  `json:"image"`
-	Key            int64  `json:"key"`
-	Name           string `json:"name"`
-	PublicationKey string `json:"publication_key"`
-	Slug           string `json:"slug"`
-	Tel            string `json:"tel"`
-	Title          string `json:"title"`
-
-	Social struct {
-		Facebook  string `json:"facebook"`
-		Instagram string `json:"instagram"`
-		Linkedin  string `json:"linkedin"`
-		Twitter   string `json:"twitter"`
-	}
+	// Active   bool        `json:"active"`
+	// Bio      string      `json:"bio"`
+	// Category string      `json:"category"`
+	// Email    interface{} `json:"email"`
+	// Image    interface{} `json:"image"`
+	// Key      int64       `json:"key"`
+	// Name     string      `json:"name"`
+	// PublicationKey string      `json:"publication_key"`
+	// Slug           string      `json:"slug"`
+	// Tel            interface{} `json:"tel"`
+	// Title          string      `json:"title"`
+	//
+	//	Social struct {
+	//		Facebook  interface{} `json:"facebook"`
+	//		Instagram interface{} `json:"instagram"`
+	//		Linkedin  interface{} `json:"linkedin"`
+	//		Twitter   interface{} `json:"twitter"`
+	//	}
 }
 
 type Image struct {
