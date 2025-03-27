@@ -21,51 +21,89 @@ func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 		},
 	}
 
-	env, err := getEnvironment(s)
-	if err != nil {
-		return nil, err
-	}
-
-	publication := &v1.Publication{
-		Id:          env.Publication.ID,
-		Name:        env.Publication.Name,
-		Description: &env.Publication.Meta.Description,
-	}
-
-	for _, p := range env.Publications {
-		publication.Menu = append(publication.Menu, &v1.Publication_MenuItem{
-			Id:       p.ID,
-			Text:     &p.Name,
-			Title:    &p.Name,
-			Children: appendSections(p.Sections),
-			Type: &v1.Publication_MenuItem_Page_{
-				Page: &v1.Publication_MenuItem_Page{},
-			},
-		})
-	}
-
-	ret.Publications = append(ret.Publications, publication)
+	// 	env, err := getEnvironment(s)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	//
+	// 	publication := &v1.Publication{
+	// 		Id:          env.Publication.ID,
+	// 		Name:        env.Publication.Name,
+	// 		Description: &env.Publication.Meta.Description,
+	// 	}
+	//
+	// 	for _, p := range env.Publications {
+	// 		publication.Menu = append(publication.Menu, &v1.Publication_MenuItem{
+	// 			Id:       p.ID,
+	// 			Text:     &p.Name,
+	// 			Title:    &p.Name,
+	// 			Children: appendSections(p.Sections),
+	// 			Type: &v1.Publication_MenuItem_Page_{
+	// 				Page: &v1.Publication_MenuItem_Page{},
+	// 			},
+	// 		})
+	// 	}
+	//
+	// 	ret.Publications = append(ret.Publications, publication)
 
 	return ret, nil
 }
 
-func appendSections(sections []Section) []*v1.Publication_MenuItem {
+func getPlacement(s *Importer, publication, section, subsection string) *admin.ArticlePlacement {
 
-	mi := []*v1.Publication_MenuItem{}
-	for _, section := range sections {
-		mi = append(mi, &v1.Publication_MenuItem{
-			Id:       section.ID,
-			Text:     &section.Name,
-			Title:    &section.Name,
-			Children: appendSections(section.Sections),
-			Type: &v1.Publication_MenuItem_Page_{
-				Page: &v1.Publication_MenuItem_Page{},
-			},
-		})
+	env, err := getEnvironment(s)
+
+	if err != nil {
+		panic(err)
 	}
 
-	return mi
+	new := func(id, name string) *admin.ArticlePlacement_SourceDescriptor {
+		return &admin.ArticlePlacement_SourceDescriptor{
+			Id:   id,
+			Name: name,
+		}
+	}
+
+	for _, pub := range env.Publications {
+		if pub.ID == publication {
+			ret := &admin.ArticlePlacement{
+				Source: []*admin.ArticlePlacement_SourceDescriptor{new(pub.ID, pub.Name)}}
+
+			for _, s := range pub.Sections {
+				if s.ID == section {
+					ret.Source = append(ret.Source, new(s.ID, s.Name))
+
+					for _, ss := range s.Sections {
+						if ss.ID == subsection {
+							ret.Source = append(ret.Source, new(ss.ID, ss.Name))
+						}
+					}
+				}
+			}
+			return ret
+		}
+	}
+
+	return nil
 }
+
+// func appendSections(sections []Section) []*v1.Publication_MenuItem {
+//
+// 	mi := []*v1.Publication_MenuItem{}
+// 	for _, section := range sections {
+// 		mi = append(mi, &v1.Publication_MenuItem{
+// 			Id:       section.ID,
+// 			Text:     &section.Name,
+// 			Title:    &section.Name,
+// 			Children: appendSections(section.Sections),
+// 			Type: &v1.Publication_MenuItem_Page_{
+// 				Page: &v1.Publication_MenuItem_Page{},
+// 			},
+// 		})
+// 	}
+//
+// 	return mi
+// }
 
 /*
  * updateBuckets
@@ -93,9 +131,9 @@ func updateBuckets() {
 /*
  * TEMP
  */
-func getWire(bucket *admin.Bucket) *admin.Bucket_Wire {
+func getWire(bucket *admin.Bucket) *admin.Wire {
 	if bucket.Id == "bd" {
-		return &admin.Bucket_Wire{
+		return &admin.Wire{
 			Active:          true,
 			AddToList:       true,
 			AutoPublish:     true,
@@ -155,18 +193,26 @@ func createSections(bucket *admin.Bucket, pub Publication) {
 	}
 }
 
+var environ *Env
+
 /*
  * getEnvironment
  */
 func getEnvironment(s *Importer) (*Env, error) {
 
+	if environ != nil {
+		return environ, nil
+	}
+
 	fmt.Println("Getting environment from Cosmos...")
 
-	env, err := lib.Json[Env](fmt.Sprintf("%s/config/env", s.Host), "348c758db9458109244ddbefe4549bde73133324")
+	env, err := lib.Json[Env](fmt.Sprintf("%s/config/env", s.Host), s.AccessToken)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get articles from cosmos")
 	}
+
+	environ = env
 
 	return env, nil
 }

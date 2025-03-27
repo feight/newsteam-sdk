@@ -1,11 +1,8 @@
 package cosmos
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"buf.build/gen/go/dgroux/newsteam/protocolbuffers/go/admin"
@@ -13,7 +10,6 @@ import (
 	"github.com/feight/newsteam-sdk/lib"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
-	"google.golang.org/protobuf/proto"
 )
 
 type Importer struct {
@@ -85,16 +81,11 @@ func (s *Importer) ProcessLogfile(bucket *admin.Bucket, content []byte) []*admin
 func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Article {
 
 	m := &admin.Article{}
-	m.AdTagCustom = &ca.AdTagCustom
-	m.ContentType = &ca.ContentType
-	m.Assigned = ca.Assigned
 	// m.AuthorIds = ca.AuthorKeys
 	m.Authors = ca.Authors
 	m.Breaking = &ca.Breaking
 	m.CanonicalUrl = &ca.CanonicalURL
-	m.CommentsEnabled = &ca.CommentsEnabled
-	m.EditorsChoice = &ca.EditorsChoice
-	m.ExternalUrl = &ca.ExternalURL
+	m.RedirectUrl = &ca.ExternalURL
 	m.Groups = ca.Groups
 	// m.ImageHeader
 	// m.ImageThumbnail
@@ -106,33 +97,35 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 	// m.LocationName
 	m.Sponsored = &ca.Native
 	// m.Notes
-	m.OnHold = &ca.OnHold
 	// m.PlainText = ca.PlainText
-	m.Priority = &ca.Priority
 	// m.Published
-	m.PushNotify = &ca.PushNotify
 	// m.RelatedArticles = ca.RelatedArticles
 	// m.RelatedArticlesKeys
 	m.Sensitive = &ca.Sensitive
-	m.SourceId = proto.String(fmt.Sprint(ca.Key))
+	m.Source = &admin.SourceProperty{
+		Id: fmt.Sprint(ca.Key),
+	}
 	// m.ShareID
-	m.ShowCreatorCard = &ca.ShowAuthorCard
 	// m.Slug
 	// m.SlugCustom
 	// m.SlugOld
-	m.SocialShareText = &ca.SocialShareText
-	m.Source = &ca.Source
+	m.ShareText = &admin.ShareTextProperty{
+		Text: ca.SocialShareText,
+	}
 	// m.SourceID
 	// m.Sponsor
 	// m.SponsorIds = ca.SponsorKeys
 	// m.Status = &ca.Status
 	// m.Summary
-	m.Syndicate = &ca.Syndicate
 	// m.SyndicateStatus
 	// m.Synopsis
 	m.SynopsisCustom = &ca.SynopsisCustom
 	m.Tags = ca.Tags
-	m.TitleCustom = &ca.TitleCustom
+	m.TitleListing = &admin.TextProperty{
+		Html: ca.TitleCustom,
+		Raw:  ca.TitleCustom,
+		Text: ca.TitleCustom,
+	}
 	// m.TitleListing
 	// m.TitleListingText
 	// m.TitleSectionText
@@ -159,16 +152,11 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 		Text: ca.IntroText,
 	}
 
-	m.Labels = map[string]string{"source_id": "cosmos"}
+	m.Attributes = map[string]string{"source_id": "cosmos"}
 
-	m.SectionIds = []string{}
-
-	for _, placement := range ca.Sections {
-
-		section := s.getSection(bucket, getSid(placement.Publication, placement.Section, placement.Subsection))
-
-		if section != nil {
-			m.SectionIds = append(m.SectionIds, section.Id)
+	for _, section := range ca.Sections {
+		if placement := getPlacement(s, section.Publication, section.Section, section.Subsection); s != nil {
+			m.Placements = append(m.Placements, placement)
 		}
 	}
 
@@ -177,34 +165,6 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 	}
 
 	return m
-}
-
-func getSha1(str string) string {
-
-	hash := sha1.New()
-	hash.Write([]byte(str))
-	hashStr := hex.EncodeToString(hash.Sum(nil))
-
-	return hashStr
-}
-
-/*
- * Gets a unique section ID
- */
-func getSid(publicationId string, parts ...string) string {
-	return getSha1(publicationId + strings.Join(parts, ""))
-}
-
-func (s *Importer) getSection(bucket *admin.Bucket, sid string) *admin.Section {
-
-	for _, section := range bucket.Sections {
-		if section.Sid == sid {
-			return section
-		}
-	}
-
-	// TODO: FIX!! This will not allow cross bucket placements.
-	return nil
 }
 
 /*
@@ -368,7 +328,7 @@ func mapTextWidget(t string, w TextWidget) *admin.TextWidget {
 func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 
 	// Upload image...
-	image := newsteam.UploadImageFromUrl(fmt.Sprintf("https:%s=s2000", w.Image.Filepath))
+	image := newsteam.UploadImageFromUrl(fmt.Sprintf("%s/raw", w.Image.Filepath))
 	// Id:          w.String("text"),
 	image.ContentType = w.Image.ContentType
 	image.Width = w.Image.Width
@@ -376,9 +336,9 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	// image.// Filesize=    w.Image.Width
 	image.Keywords = w.Image.Keywords
 	image.Palette = w.Image.Palette
-	image.Creator = w.Image.Author
-	image.Filename = w.Image.Filename
-	image.Description = w.Image.Description
+	image.Credit = &w.Image.Author
+	image.Sha256Hash = w.Image.Filename
+	image.Caption = &w.Image.Description
 	image.Title = w.Image.Title
 	image.FocalY = w.Image.FocalY
 	image.FocalX = w.Image.FocalX
@@ -806,11 +766,11 @@ type Section struct {
 }
 
 type Article struct {
-	Access                bool        `json:"access"`
-	Active                bool        `json:"active"`
-	AdTagCustom           string      `json:"ad_tag_custom"`
-	Assigned              []string    `json:"assigned"`
-	Author                Author      `json:"author"`
+	Access      bool     `json:"access"`
+	Active      bool     `json:"active"`
+	AdTagCustom string   `json:"ad_tag_custom"`
+	Assigned    []string `json:"assigned"`
+	// Author                *Author     `json:"author"`
 	AuthorKeys            []int64     `json:"author_keys"`
 	Authors               []string    `json:"authors"`
 	Breaking              bool        `json:"breaking"`
@@ -929,24 +889,24 @@ type Article struct {
 }
 
 type Author struct {
-	Active         bool   `json:"active"`
-	Bio            string `json:"bio"`
-	Category       string `json:"category"`
-	Email          string `json:"email"`
-	Image          Image  `json:"image"`
-	Key            int64  `json:"key"`
-	Name           string `json:"name"`
-	PublicationKey string `json:"publication_key"`
-	Slug           string `json:"slug"`
-	Tel            string `json:"tel"`
-	Title          string `json:"title"`
-
-	Social struct {
-		Facebook  string `json:"facebook"`
-		Instagram string `json:"instagram"`
-		Linkedin  string `json:"linkedin"`
-		Twitter   string `json:"twitter"`
-	}
+	// Active   bool        `json:"active"`
+	// Bio      string      `json:"bio"`
+	// Category string      `json:"category"`
+	// Email    interface{} `json:"email"`
+	// Image    interface{} `json:"image"`
+	// Key      int64       `json:"key"`
+	// Name     string      `json:"name"`
+	// PublicationKey string      `json:"publication_key"`
+	// Slug           string      `json:"slug"`
+	// Tel            interface{} `json:"tel"`
+	// Title          string      `json:"title"`
+	//
+	//	Social struct {
+	//		Facebook  interface{} `json:"facebook"`
+	//		Instagram interface{} `json:"instagram"`
+	//		Linkedin  interface{} `json:"linkedin"`
+	//		Twitter   interface{} `json:"twitter"`
+	//	}
 }
 
 type Image struct {
