@@ -60,7 +60,7 @@ func InitializeBuckets(buckets []Bucket) {
 		Handler:      h2c.NewHandler(mux, &http2.Server{}),
 	}
 
-	fmt.Println("⚡ Running [http://localhost:3333]. Waiting for incoming connection from Newsteam...")
+	fmt.Printf("⚡ Running [http://localhost:%s]. Waiting for incoming connection from Newsteam...\n", port)
 
 	server.ListenAndServe()
 }
