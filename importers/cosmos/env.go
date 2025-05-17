@@ -137,7 +137,6 @@ func getWire(bucket *admin.Bucket) *admin.Wire {
 			Active:          true,
 			AddToList:       true,
 			AutoPublish:     true,
-			Premium:         true,
 			ProcessorUrl:    "http://localhost:3333",
 			UpdateFrequency: 60,
 		}

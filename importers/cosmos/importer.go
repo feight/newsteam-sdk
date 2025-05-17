@@ -175,129 +175,129 @@ func (s *Importer) mapWidget(m *admin.Article, typ string, data map[string]any) 
 	switch typ {
 
 	case "text":
-		m.Widgets = append(m.Widgets, &admin.WidgetCollection{
-			Widget: &admin.WidgetCollection_Text{
-				Text: mapTextWidget(typ, getWidget[TextWidget](data))}})
+		m.Widgets = append(m.Widgets, &admin.Widget{
+			Widget: &admin.Widget_Text{
+				Text: mapTextWidget(getWidget[TextWidget](data))}})
 	case "image":
-		m.Widgets = append(m.Widgets, &admin.WidgetCollection{
-			Widget: &admin.WidgetCollection_Image{
-				Image: mapImageWidget(typ, getWidget[ImageWidget](data))}})
+		m.Widgets = append(m.Widgets, &admin.Widget{
+			Widget: &admin.Widget_Image{
+				Image: mapImageWidget(getWidget[ImageWidget](data))}})
 
 		// case "accordion":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapAccordionWidget(typ, getWidget[TextWidget](data))}})
 		// case "article-list":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapArticleListWidget(typ, getWidget[TextWidget](data))}})
 		// case "chartblocks":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapChartblocksWidget(typ, getWidget[TextWidget](data))}})
 		// case "crowdsignal":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapCrowdsignalWidget(typ, getWidget[TextWidget](data))}})
 		// case "facebook-page":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapFacebookPageWidget(typ, getWidget[TextWidget](data))}})
 		// case "facebook-post":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapFacebookPostWidget(typ, getWidget[TextWidget](data))}})
 		// case "facebook-video":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapFacebookVideoWidget(typ, getWidget[TextWidget](data))}})
 		// case "image-gallery":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapImageGalleryWidget(typ, getWidget[TextWidget](data))}})
 		// case "giphy":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapGiphyWidget(typ, getWidget[TextWidget](data))}})
 		// case "google-map":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapGoogleMapWidget(typ, getWidget[TextWidget](data))}})
 		// case "horizontal-line":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapHorizontalLineWidget(typ, getWidget[TextWidget](data))}})
 		// case "html":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapHtmlWidget(typ, getWidget[TextWidget](data))}})
 		// case "iframely":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapIframelyWidget(typ, getWidget[TextWidget](data))}})
 		// case "infogram":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapInfogramWidget(typ, getWidget[TextWidget](data))}})
 		// case "instagram":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapInstagramWidget(typ, getWidget[TextWidget](data))}})
 		// case "iono":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapIonoWidget(typ, getWidget[TextWidget](data))}})
 		// case "issuu":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapIssuuWidget(typ, getWidget[TextWidget](data))}})
 		// case "jwplayer":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapJwplayerWidget(typ, getWidget[TextWidget](data))}})
 		// case "kickstarter":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapKickstarterWidget(typ, getWidget[TextWidget](data))}})
 		// case "link-list":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapLinkListWidget(typ, getWidget[TextWidget](data))}})
 		// case "oovvuu":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapOovvuuWidget(typ, getWidget[TextWidget](data))}})
 		// case "quote":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapQuoteWidget(typ, getWidget[TextWidget](data))}})
 		// case "related-articles":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapRelatedArticlesWidget(typ, getWidget[TextWidget](data))}})
 		// case "scribd":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapScribdWidget(typ, getWidget[TextWidget](data))}})
 		// case "soundcloud":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapSoundcloudWidget(typ, getWidget[TextWidget](data))}})
 		// case "text-block":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapTextBlockWidget(typ, getWidget[TextWidget](data))}})
 		// case "tiktok":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapTiktokWidget(typ, getWidget[TextWidget](data))}})
 		// case "twitter":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapTwitterWidget(typ, getWidget[TextWidget](data))}})
 		// case "youtube":
-		// 	m.Widgets = append(m.Widgets, &content.WidgetCollection{
-		// 		Widget: &content.WidgetCollection_Text{
+		// 	m.Widgets = append(m.Widgets, &content.Widget{
+		// 		Widget: &content.Widget_Text{
 		// 			Text: mapYoutubeWidget(typ, getWidget[TextWidget](data))}})
 
 	}
@@ -313,9 +313,8 @@ func getWidget[T any](data map[string]any) T {
 
 }
 
-func mapTextWidget(t string, w TextWidget) *admin.TextWidget {
+func mapTextWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -325,7 +324,7 @@ func mapTextWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
+func mapImageWidget(w ImageWidget) *admin.ImageWidget {
 
 	// Upload image...
 	image := newsteam.UploadImageFromUrl(fmt.Sprintf("%s/raw", w.Image.Filepath))
@@ -345,16 +344,14 @@ func mapImageWidget(t string, w ImageWidget) *admin.ImageWidget {
 	image.Average = w.Image.Average
 
 	return &admin.ImageWidget{
-		Type: t,
 		Data: &admin.ImageWidget_Data{
 			Image: image,
 		},
 	}
 }
 
-func mapAccordionWidget(t string, w TextWidget) *admin.TextWidget {
+func mapAccordionWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -364,9 +361,8 @@ func mapAccordionWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapArticleListWidget(t string, w TextWidget) *admin.TextWidget {
+func mapArticleListWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -376,9 +372,8 @@ func mapArticleListWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapChartblocksWidget(t string, w TextWidget) *admin.TextWidget {
+func mapChartblocksWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -388,9 +383,8 @@ func mapChartblocksWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapCrowdsignalWidget(t string, w TextWidget) *admin.TextWidget {
+func mapCrowdsignalWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -400,9 +394,8 @@ func mapCrowdsignalWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapFacebookPageWidget(t string, w TextWidget) *admin.TextWidget {
+func mapFacebookPageWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -412,9 +405,8 @@ func mapFacebookPageWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapFacebookPostWidget(t string, w TextWidget) *admin.TextWidget {
+func mapFacebookPostWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -424,9 +416,8 @@ func mapFacebookPostWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapFacebookVideoWidget(t string, w TextWidget) *admin.TextWidget {
+func mapFacebookVideoWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -436,9 +427,8 @@ func mapFacebookVideoWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapImageGalleryWidget(t string, w TextWidget) *admin.TextWidget {
+func mapImageGalleryWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -448,9 +438,8 @@ func mapImageGalleryWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapGiphyWidget(t string, w TextWidget) *admin.TextWidget {
+func mapGiphyWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -460,9 +449,8 @@ func mapGiphyWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapGoogleMapWidget(t string, w TextWidget) *admin.TextWidget {
+func mapGoogleMapWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -472,9 +460,8 @@ func mapGoogleMapWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapHorizontalLineWidget(t string, w TextWidget) *admin.TextWidget {
+func mapHorizontalLineWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -484,9 +471,8 @@ func mapHorizontalLineWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapHtmlWidget(t string, w TextWidget) *admin.TextWidget {
+func mapHtmlWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -496,9 +482,8 @@ func mapHtmlWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapIframelyWidget(t string, w TextWidget) *admin.TextWidget {
+func mapIframelyWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -508,9 +493,8 @@ func mapIframelyWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapInfogramWidget(t string, w TextWidget) *admin.TextWidget {
+func mapInfogramWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -520,9 +504,8 @@ func mapInfogramWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapInstagramWidget(t string, w TextWidget) *admin.TextWidget {
+func mapInstagramWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -532,9 +515,8 @@ func mapInstagramWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapIonoWidget(t string, w TextWidget) *admin.TextWidget {
+func mapIonoWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -544,9 +526,8 @@ func mapIonoWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapIssuuWidget(t string, w TextWidget) *admin.TextWidget {
+func mapIssuuWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -556,9 +537,8 @@ func mapIssuuWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapJwplayerWidget(t string, w TextWidget) *admin.TextWidget {
+func mapJwplayerWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -568,9 +548,8 @@ func mapJwplayerWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapKickstarterWidget(t string, w TextWidget) *admin.TextWidget {
+func mapKickstarterWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -580,9 +559,8 @@ func mapKickstarterWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapLinkListWidget(t string, w TextWidget) *admin.TextWidget {
+func mapLinkListWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -592,9 +570,8 @@ func mapLinkListWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapOovvuuWidget(t string, w TextWidget) *admin.TextWidget {
+func mapOovvuuWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -604,9 +581,8 @@ func mapOovvuuWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapQuoteWidget(t string, w TextWidget) *admin.TextWidget {
+func mapQuoteWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -616,9 +592,8 @@ func mapQuoteWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapRelatedArticlesWidget(t string, w TextWidget) *admin.TextWidget {
+func mapRelatedArticlesWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -628,9 +603,8 @@ func mapRelatedArticlesWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapScribdWidget(t string, w TextWidget) *admin.TextWidget {
+func mapScribdWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -640,9 +614,8 @@ func mapScribdWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapSoundcloudWidget(t string, w TextWidget) *admin.TextWidget {
+func mapSoundcloudWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -652,9 +625,8 @@ func mapSoundcloudWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapTextBlockWidget(t string, w TextWidget) *admin.TextWidget {
+func mapTextBlockWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -664,9 +636,8 @@ func mapTextBlockWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapTiktokWidget(t string, w TextWidget) *admin.TextWidget {
+func mapTiktokWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -676,9 +647,8 @@ func mapTiktokWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapTwitterWidget(t string, w TextWidget) *admin.TextWidget {
+func mapTwitterWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
@@ -688,9 +658,8 @@ func mapTwitterWidget(t string, w TextWidget) *admin.TextWidget {
 	}
 }
 
-func mapYoutubeWidget(t string, w TextWidget) *admin.TextWidget {
+func mapYoutubeWidget(w TextWidget) *admin.TextWidget {
 	return &admin.TextWidget{
-		Type: t,
 		Data: &admin.TextWidget_Data{
 			Text: w.Text,
 			Html: w.Clean,
