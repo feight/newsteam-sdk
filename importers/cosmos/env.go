@@ -49,42 +49,29 @@ func (s *Importer) GetEnv() (*v1.GetEnvResponse, error) {
 	return ret, nil
 }
 
-func getPlacement(s *Importer, publication, section, subsection string) *admin.ArticlePlacement {
+func getPlacement(ca Article, section Section) *admin.ArticlePlacement {
 
-	env, err := getEnvironment(s)
-
-	if err != nil {
-		panic(err)
+	ret := &admin.ArticlePlacement{
+		Policy:          &ca.ContentType,
+		EditorsChoice:   &ca.EditorsChoice,
+		CommentsEnabled: &ca.CommentsEnabled,
 	}
 
-	new := func(id, name string) *admin.ArticlePlacement_SourceDescriptor {
-		return &admin.ArticlePlacement_SourceDescriptor{
-			Id:   id,
-			Name: name,
+	add := func(id string) {
+		if id != "" {
+			ret.Source = append(ret.Source, &admin.ArticlePlacement_SourceDescriptor{
+				Id:   id,
+				Name: id,
+			})
 		}
 	}
 
-	for _, pub := range env.Publications {
-		if pub.ID == publication {
-			ret := &admin.ArticlePlacement{
-				Source: []*admin.ArticlePlacement_SourceDescriptor{new(pub.ID, pub.Name)}}
+	add(section.Publication)
+	add(section.Section)
+	add(section.Subsection)
+	add(section.Thirdsection)
 
-			for _, s := range pub.Sections {
-				if s.ID == section {
-					ret.Source = append(ret.Source, new(s.ID, s.Name))
-
-					for _, ss := range s.Sections {
-						if ss.ID == subsection {
-							ret.Source = append(ret.Source, new(ss.ID, ss.Name))
-						}
-					}
-				}
-			}
-			return ret
-		}
-	}
-
-	return nil
+	return ret
 }
 
 // func appendSections(sections []Section) []*v1.Publication_MenuItem {
@@ -148,7 +135,7 @@ func getWire(bucket *admin.Bucket) *admin.Wire {
 /*
  * createSections
  */
-func createSections(bucket *admin.Bucket, pub Publication) {
+func createSections(bucket *admin.Bucket, pub EnvPublication) {
 
 	for range pub.Sections {
 

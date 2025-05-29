@@ -1,9 +1,9 @@
 buf.build/gen/go/dgroux/lib/protocolbuffers/go v1.36.6-20250313094407-c21b846b1b46.1 h1:3byrGj1TP30SanYsdP9ND55WNrxjpFv7LiqKFBex4yg=
 buf.build/gen/go/dgroux/lib/protocolbuffers/go v1.36.6-20250313094407-c21b846b1b46.1/go.mod h1:aH0fTnqOdF7FnXlYkWNwCy7DOhk0vpyyhs6Owzpp9AA=
-buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250517150912-2984b72ed1cb.1 h1:NppuQMi3XEGnvZu60S/KhmpmYvlpvA28agigTlZGQN4=
-buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250517150912-2984b72ed1cb.1/go.mod h1:kD9HIBqXTYzev8Ijd3OtiSi/wqUNztsQF6iF30KNEoA=
-buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.6-20250517150912-2984b72ed1cb.1 h1:DCV3WOgRVPsNoK/2FIjaBJfOaaQAL2UnOux9ieUKZYc=
-buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.6-20250517150912-2984b72ed1cb.1/go.mod h1:HczNRhW1+whj1s5cEkFTcmeDlTjjx//lwk63Jfos+Pk=
+buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250526110029-30b107302144.1 h1:pnK4LujBDrjZq8sSRaKOHNEYu12WyV23tK0LBMgDkxo=
+buf.build/gen/go/dgroux/newsteam/connectrpc/go v1.18.1-20250526110029-30b107302144.1/go.mod h1:UcrpKWxIkevV8YChRABYZxTE1iY/mS8q5sKT2wmTMVQ=
+buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.6-20250526110029-30b107302144.1 h1:6yzNZYjzssxxO+RSMmNXm7d1CHv/yOzModmAF2zJe/4=
+buf.build/gen/go/dgroux/newsteam/protocolbuffers/go v1.36.6-20250526110029-30b107302144.1/go.mod h1:HczNRhW1+whj1s5cEkFTcmeDlTjjx//lwk63Jfos+Pk=
 connectrpc.com/connect v1.18.1 h1:PAg7CjSAGvscaf6YZKUefjoih5Z/qYkyaTrBW8xvYPw=
 connectrpc.com/connect v1.18.1/go.mod h1:0292hj1rnx8oFrStN7cB4jjVBeqs+Yx5yDIC2prWDO8=
 github.com/fatih/color v1.18.0 h1:S8gINlzdQ840/4pfAwic/ZE0djQEH3wM94VfqLTZcOM=

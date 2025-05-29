@@ -155,7 +155,7 @@ func (s *Importer) createArticle(bucket *admin.Bucket, ca Article) *admin.Articl
 	m.Attributes = map[string]string{"source_id": "cosmos"}
 
 	for _, section := range ca.Sections {
-		if placement := getPlacement(s, section.Publication, section.Section, section.Subsection); s != nil {
+		if placement := getPlacement(ca, section); s != nil {
 			m.Placements = append(m.Placements, placement)
 		}
 	}
@@ -176,11 +176,11 @@ func (s *Importer) mapWidget(m *admin.Article, typ string, data map[string]any) 
 
 	case "text":
 		m.Widgets = append(m.Widgets, &admin.Widget{
-			Widget: &admin.Widget_Text{
+			Data: &admin.Widget_Text{
 				Text: mapTextWidget(getWidget[TextWidget](data))}})
 	case "image":
 		m.Widgets = append(m.Widgets, &admin.Widget{
-			Widget: &admin.Widget_Image{
+			Data: &admin.Widget_Image{
 				Image: mapImageWidget(getWidget[ImageWidget](data))}})
 
 		// case "accordion":
@@ -313,18 +313,16 @@ func getWidget[T any](data map[string]any) T {
 
 }
 
-func mapTextWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
+func mapTextWidget(w TextWidget) *admin.TextWidgetData {
+	return &admin.TextWidgetData{
+		Text: w.Text,
+		Html: w.Clean,
+		Raw:  w.HTML,
+		// Clear: widget.Type,
 	}
 }
 
-func mapImageWidget(w ImageWidget) *admin.ImageWidget {
+func mapImageWidget(w ImageWidget) *admin.ImageWidgetData {
 
 	// Upload image...
 	image := newsteam.UploadImageFromUrl(fmt.Sprintf("%s/raw", w.Image.Filepath))
@@ -343,329 +341,8 @@ func mapImageWidget(w ImageWidget) *admin.ImageWidget {
 	image.FocalX = w.Image.FocalX
 	image.Average = w.Image.Average
 
-	return &admin.ImageWidget{
-		Data: &admin.ImageWidget_Data{
-			Image: image,
-		},
-	}
-}
-
-func mapAccordionWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapArticleListWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapChartblocksWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapCrowdsignalWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapFacebookPageWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapFacebookPostWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapFacebookVideoWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapImageGalleryWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapGiphyWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapGoogleMapWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapHorizontalLineWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapHtmlWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapIframelyWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapInfogramWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapInstagramWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapIonoWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapIssuuWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapJwplayerWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapKickstarterWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapLinkListWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapOovvuuWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapQuoteWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapRelatedArticlesWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapScribdWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapSoundcloudWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapTextBlockWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapTiktokWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapTwitterWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
-	}
-}
-
-func mapYoutubeWidget(w TextWidget) *admin.TextWidget {
-	return &admin.TextWidget{
-		Data: &admin.TextWidget_Data{
-			Text: w.Text,
-			Html: w.Clean,
-			Raw:  w.HTML,
-			// Clear: widget.Type,
-		},
+	return &admin.ImageWidgetData{
+		Image: image,
 	}
 }
 
@@ -696,8 +373,8 @@ type Env struct {
 		Key  string `json:"key"`
 		Name string `json:"name"`
 	} `json:"nova_feeds"`
-	Publication  Publication   `json:"publication"`
-	Publications []Publication `json:"publications"`
+	Publication  EnvPublication   `json:"publication"`
+	Publications []EnvPublication `json:"publications"`
 	Sections     []struct {
 		ID       string `json:"id"`
 		Name     string `json:"name"`
@@ -710,28 +387,28 @@ type Env struct {
 	} `json:"sections"`
 }
 
-type Publication struct {
+type EnvPublication struct {
 	ID   string `json:"id"`
 	Meta struct {
 		Description string `json:"description"`
 		Keywords    string `json:"keywords"`
 	} `json:"meta"`
-	Name     string    `json:"name"`
-	Primary  bool      `json:"primary"`
-	Routed   bool      `json:"routed"`
-	Sections []Section `json:"sections"`
-	Show     bool      `json:"show"`
+	Name     string       `json:"name"`
+	Primary  bool         `json:"primary"`
+	Routed   bool         `json:"routed"`
+	Sections []EnvSection `json:"sections"`
+	Show     bool         `json:"show"`
 	Strings  struct {
 	} `json:"strings"`
 	URLKey        string `json:"urlKey"`
 	UsePrimaryNav bool   `json:"usePrimaryNav"`
 }
 
-type Section struct {
-	ID       string    `json:"id"`
-	Name     string    `json:"name"`
-	Sections []Section `json:"sections,omitempty"`
-	URLKey   string    `json:"urlKey"`
+type EnvSection struct {
+	ID       string       `json:"id"`
+	Name     string       `json:"name"`
+	Sections []EnvSection `json:"sections,omitempty"`
+	URLKey   string       `json:"urlKey"`
 }
 
 type Article struct {
@@ -830,12 +507,7 @@ type Article struct {
 		Name string
 	}
 
-	Sections []struct {
-		Primary     bool
-		Publication string
-		Section     string
-		Subsection  string
-	}
+	Sections []Section
 
 	Subsection struct {
 		ID   string
@@ -855,6 +527,14 @@ type Article struct {
 		Type string
 		Data map[string]any
 	}
+}
+
+type Section struct {
+	Primary      bool
+	Publication  string
+	Section      string
+	Subsection   string
+	Thirdsection string
 }
 
 type Author struct {

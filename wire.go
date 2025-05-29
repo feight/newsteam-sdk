@@ -62,7 +62,12 @@ func InitializeBuckets(buckets []Bucket) {
 
 	fmt.Printf("⚡ Running [http://localhost:%s]. Waiting for incoming connection from Newsteam...\n", port)
 
-	server.ListenAndServe()
+	if err := server.ListenAndServe(); err != nil {
+
+		color.HiRed("\n🔥 %s\n\n", err)
+
+		os.Exit(1)
+	}
 }
 
 type WireService struct{}
